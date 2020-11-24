@@ -9,7 +9,6 @@ let pose;
 //R channel of the color under 13 pixels of the heart
 let r = 255;
 
-
 function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
@@ -46,18 +45,18 @@ function draw() {
     print(d);
     
     if(d<35 | d>45){
-      push();
       image(dstimg,0,0,640,480);
       blur();
-      pop();
     }
     
     if(d<45 & d>35){
       image(dstimg, 0, 0,640, 480);
       edgeDetect();
       
-
-      objects.push(new heartObj());
+     let WheCreate=round(random(4));
+     if(WheCreate==1){
+         objects.push(new heartObj());
+     }
       
       for(let i = 0;i<objects.length;i++){
         objects[i].display();
@@ -154,17 +153,17 @@ function boxBlur (x, y) {
   let avgB = 0;
   let pixelsSeen = 0;
 // Go through each neighborly pixel.
-for (let dx = -1; dx < 4; dx++) {
-    for (let dy = -1; dy < 4; dy++) {
+for (let dx = -1; dx < random(4,8); dx++) {
+    for (let dy = -1; dy < random(4,8); dy++) {
       let index = getIndex(x + dx, y + dy);
       // If we're off the pixel array, ignore it!
-      if (index < 0 || index > pixels.length) {
+      if (index < 0 || index > video.pixels.length) {
         continue;
       }
       
-      let r = pixels[index+0];
-      let g = pixels[index+1];
-      let b = pixels[index+2];
+      let r = video.pixels[index+0];
+      let g = video.pixels[index+1];
+      let b = video.pixels[index+2];
       
       avgR += r;
       avgG += g;
@@ -180,15 +179,15 @@ for (let dx = -1; dx < 4; dx++) {
   
   let trueIndex = getIndex(x, y);
   
-  pixels[trueIndex] = avgR;
-  pixels[trueIndex + 1] = avgG;
-  pixels[trueIndex + 2] = avgB;
+  dstimg.pixels[trueIndex] = avgR+20;
+  dstimg.pixels[trueIndex + 1] = avgG-10;
+  dstimg.pixels[trueIndex + 2] = avgB-10;
 }
 
 class heartObj{
   constructor(){
-    this.x = random(40,600);
-    this.y = random(0,20);
+    this.x = round(random(40,600));
+    this.y = round(random(0,10));
     //this.index = (this.x + (this.y+14) * width)*4;
   }
   
@@ -198,9 +197,13 @@ class heartObj{
     print(r);
     //print(this.index);
 
-    //if(r>200){
+    if(r>200){
       this.y+= 10;
-    //}
+    }
+    
+    if(this.y>height-40){
+      this.y = 0;
+    }
   }
 
   display(){
@@ -211,13 +214,3 @@ class heartObj{
     triangle(this.x, this.y+13, this.x-10,this.y, this.x+10, this.y);
   }
 }
-
-// function drawObjects(){
-//   for(let obj of objects){
-//     noStroke();
-//     fill(220,160,160);
-//     triangle(obj.x, obj.y, obj.x-5,obj.y-7, obj.x-10, obj.y);
-//     triangle(obj.x, obj.y, obj.x+5,obj.y-7, obj.x+10, obj.y);
-//     triangle(obj.x, obj.y+13, obj.x-10,obj.y, obj.x+10, obj.y);
-//   }
-// }
